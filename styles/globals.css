@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  #__next {
+    @apply h-screen bg-indigo-800 dark:bg-gray-800;
+  }
+}
+
 html,
 body {
   padding: 0;

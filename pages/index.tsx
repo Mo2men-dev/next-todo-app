@@ -1,7 +1,14 @@
 import type { NextPage } from "next";
+import SigninForm from "../components/SigninForm";
+import Nav from "../components/Nav";
 
 const Home: NextPage = () => {
-  return <div className="container">Hello</div>;
+  return (
+    <>
+      <Nav />
+      <SigninForm />
+    </>
+  );
 };
 
 export default Home;
