@@ -1,12 +1,24 @@
 import { useRouter } from "next/router";
-import React, { useRef, useState } from "react";
+import React, { FormEventHandler, useRef, useState } from "react";
 import ShowPasswordButton from "./ShowPasswordButton";
+import { useAuthContext } from "../context/AuthContext";
+import { auth } from "../firebase/firebase";
 
 function SigninForm() {
+  // router is used to redirect to the user's profile page
   const router = useRouter();
+
+  // state is used to store the user's email and password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // password input ref
   const passwordInputRef = useRef<HTMLInputElement>(null);
+
+  // authContext is used to create a new user
+  const login = useAuthContext()?.login;
+
+  // Regex Function to validate email
   const validateEmail = (email: String) => {
     return String(email)
       .toLowerCase()
@@ -14,8 +26,24 @@ function SigninForm() {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
   };
+
+  // submit function is used to login a user
+  const handleLogin: React.MouseEventHandler<
+    HTMLButtonElement | HTMLAnchorElement
+  > = async (e) => {
+    e.preventDefault();
+    if (validateEmail(email)) {
+      login && (await login(auth, email, password));
+      router.push(`/`);
+    } else {
+      alert("Invalid email");
+    }
+  };
   return (
+    // form is used to login a user and is styled using tailwindcss
+
     <div className="w-full h-full flex flex-col items-center justify-center">
+      {/* Sign in form */}
       <form className="bg-indigo-800 p-4 h-2/4 w-3/4 rounded-md dark:bg-gray-800">
         <label
           htmlFor="email"
@@ -29,6 +57,8 @@ function SigninForm() {
             Sign up
           </a>
         </label>
+
+        {/* E-mail input */}
         <div className="mb-6">
           <label
             htmlFor="email"
@@ -45,6 +75,8 @@ function SigninForm() {
             required
           />
         </div>
+
+        {/* Password input */}
         <div className="mb-6 relative">
           <label
             htmlFor="password"
@@ -74,6 +106,8 @@ function SigninForm() {
             }}
           />
         </div>
+
+        {/* Remeber checkbox */}
         <div className="flex items-start mb-6">
           <div className="flex items-center h-5">
             <input
@@ -91,10 +125,13 @@ function SigninForm() {
             Remember me
           </label>
         </div>
+
+        {/* Login button */}
         <div className="w-full flex flex-col items-center justify-between">
           <button
             disabled={!email || !password}
             type="submit"
+            onClick={handleLogin}
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:bg-slate-500 dark:disabled:bg-slate-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Sign in

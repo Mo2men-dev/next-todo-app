@@ -1,11 +1,20 @@
-import { Auth, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
+import {
+  Auth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  User,
+  updateProfile,
+} from "firebase/auth";
 import React, { ReactNode } from "react";
 import { useContext, useEffect, useState } from "react";
 import { auth } from "../firebase/firebase";
-import type { AuthContextType } from "../@types.auth";
+import type { AuthContextType } from "../types/@types.auth";
 
+// This is the context that is used to access the auth state
 const AuthContextProvider = React.createContext<AuthContextType | null>(null);
 
+// This is the hook that is used to access the auth state
 export function useAuthContext() {
   const context = useContext(AuthContextProvider);
   if (context === undefined) {
@@ -14,10 +23,13 @@ export function useAuthContext() {
   return context;
 }
 
+// This is the component that provides the auth state to its children
 function AuthContext({ children }: { children: ReactNode }): JSX.Element {
+  // The auth state is stored in the auth state variable
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
 
+  // This is the effect that is used to fetch the current user
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
@@ -26,6 +38,24 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
     return () => unsub();
   }, []);
 
+  // signInWithEmailAndPassword is used to sign in with an email and password and add a display name
+  const signup = async (
+    auth: Auth,
+    email: string,
+    password: string,
+    displayName: string
+  ) => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(auth.currentUser!, {
+        displayName,
+      });
+    } catch (error) {
+      alert("something went wrong");
+    }
+  };
+
+  // login with email and password
   const login = async (auth: Auth, email: string, password: string) => {
     try {
       return await signInWithEmailAndPassword(auth, email, password);
@@ -34,15 +64,18 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
     }
   };
 
+  // logout function is used to logout a user
   const logout = (auth: Auth) => {
     return signOut(auth);
   };
 
   const value: AuthContextType | any = {
     currentUser,
+    signup,
     login,
     logout,
   };
+
   return (
     <AuthContextProvider.Provider value={value}>
       {!isLoading && children}
