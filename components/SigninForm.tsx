@@ -39,6 +39,15 @@ function SigninForm() {
       alert("Invalid email");
     }
   };
+
+  // a function that is used to save the user's email in local storage on they check the "remember me" checkbox
+  const handleRememberMe: React.MouseEventHandler<HTMLInputElement> = (e) => {
+    if (e.currentTarget.checked) {
+      localStorage.setItem("email", email);
+    } else {
+      localStorage.removeItem("email");
+    }
+  };
   return (
     // form is used to login a user and is styled using tailwindcss
 
@@ -113,6 +122,7 @@ function SigninForm() {
             <input
               id="remember"
               type="checkbox"
+              onClick={handleRememberMe}
               value=""
               className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
               required
