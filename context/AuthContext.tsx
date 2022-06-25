@@ -10,6 +10,8 @@ import React, { ReactNode } from "react";
 import { useContext, useEffect, useState } from "react";
 import { auth } from "../firebase/firebase";
 import type { AuthContextType } from "../types/@types.auth";
+import { createNewCollection } from "../helpers/firestore";
+import { useRouter } from "next/router";
 
 // This is the context that is used to access the auth state
 const AuthContextProvider = React.createContext<AuthContextType | null>(null);
@@ -28,6 +30,9 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
   // The auth state is stored in the auth state variable
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
+
+  // router is used to redirect to the user's profile page
+  const router = useRouter();
 
   // This is the effect that is used to fetch the current user
   useEffect(() => {
@@ -50,6 +55,11 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
       await updateProfile(auth.currentUser!, {
         displayName,
       });
+      await createNewCollection(
+        auth.currentUser!.uid,
+        auth.currentUser!.displayName!
+      );
+      router.push(`/`);
     } catch (error) {
       alert("something went wrong");
     }
@@ -58,7 +68,8 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
   // login with email and password
   const login = async (auth: Auth, email: string, password: string) => {
     try {
-      return await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push(`/`);
     } catch (error) {
       alert("Invalid email or password");
     }

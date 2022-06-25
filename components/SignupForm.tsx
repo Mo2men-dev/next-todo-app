@@ -3,16 +3,15 @@ import React, { useRef, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { auth } from "../firebase/firebase";
 import ShowPasswordButton from "./ShowPasswordButton";
+import { BiLoaderAlt } from "react-icons/bi";
 
 function SignupForm() {
-  // router is used to redirect to the user's profile page
-  const router = useRouter();
-
   // state is used to store the user's email and password and to display name
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // password input ref
   const passwordInputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +36,9 @@ function SignupForm() {
     e.preventDefault();
     if (validateEmail(email)) {
       signup && (await signup(auth, email, password, displayName));
-      router.push(`/`);
+      setIsLoading(true);
+    } else {
+      alert("Invalid email");
     }
   };
   return (
@@ -160,22 +161,26 @@ function SignupForm() {
 
         {/* Sign up button */}
         <div className="w-full flex flex-col items-center justify-between">
-          <button
-            disabled={
-              password !== passwordConfirmation ||
-              !email ||
-              !password ||
-              !passwordConfirmation ||
-              !displayName ||
-              displayName.length < 3 ||
-              password.length > 12
-            }
-            type="submit"
-            onClick={handleSignup}
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none disabled:bg-slate-500 dark:disabled:bg-slate-500 focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Sign up
-          </button>
+          {!isLoading ? (
+            <button
+              disabled={
+                password !== passwordConfirmation ||
+                !email ||
+                !password ||
+                !passwordConfirmation ||
+                !displayName ||
+                displayName.length < 3 ||
+                password.length > 12
+              }
+              type="submit"
+              onClick={handleSignup}
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none disabled:bg-slate-500 dark:disabled:bg-slate-500 focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Sign up
+            </button>
+          ) : (
+            <BiLoaderAlt className="animate-spin text-white dark:text-blue-400" />
+          )}
         </div>
       </form>
     </div>

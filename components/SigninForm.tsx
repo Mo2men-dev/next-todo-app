@@ -1,19 +1,24 @@
 import { useRouter } from "next/router";
-import React, { FormEventHandler, useRef, useState } from "react";
+import React, { FormEventHandler, useEffect, useRef, useState } from "react";
 import ShowPasswordButton from "./ShowPasswordButton";
 import { useAuthContext } from "../context/AuthContext";
 import { auth } from "../firebase/firebase";
+import { BiLoaderAlt } from "react-icons/bi";
 
 function SigninForm() {
-  // router is used to redirect to the user's profile page
-  const router = useRouter();
+  // local storage is used to store the user's email
+  const emailLocalStorage = localStorage.getItem("email");
 
   // state is used to store the user's email and password
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailLocalStorage || "");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // password input ref
   const passwordInputRef = useRef<HTMLInputElement>(null);
+
+  // checkbox ref
+  const checkboxRef = useRef<HTMLInputElement>(null);
 
   // authContext is used to create a new user
   const login = useAuthContext()?.login;
@@ -32,22 +37,32 @@ function SigninForm() {
     HTMLButtonElement | HTMLAnchorElement
   > = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if (validateEmail(email)) {
+      handleRememberMe();
       login && (await login(auth, email, password));
-      router.push(`/`);
     } else {
       alert("Invalid email");
     }
   };
 
   // a function that is used to save the user's email in local storage on they check the "remember me" checkbox
-  const handleRememberMe: React.MouseEventHandler<HTMLInputElement> = (e) => {
-    if (e.currentTarget.checked) {
+  const handleRememberMe = () => {
+    if (checkboxRef.current?.checked) {
       localStorage.setItem("email", email);
     } else {
       localStorage.removeItem("email");
     }
   };
+
+  useEffect(() => {
+    if (emailLocalStorage) {
+      checkboxRef.current!.checked = true;
+    } else {
+      checkboxRef.current!.checked = false;
+    }
+  }, []);
+
   return (
     // form is used to login a user and is styled using tailwindcss
 
@@ -78,6 +93,7 @@ function SigninForm() {
           <input
             type="email"
             id="email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="bg-gray-50 border shadow-xl border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="E-mail"
@@ -122,10 +138,9 @@ function SigninForm() {
             <input
               id="remember"
               type="checkbox"
-              onClick={handleRememberMe}
               value=""
+              ref={checkboxRef}
               className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
-              required
             />
           </div>
           <label
@@ -138,14 +153,18 @@ function SigninForm() {
 
         {/* Login button */}
         <div className="w-full flex flex-col items-center justify-between">
-          <button
-            disabled={!email || !password}
-            type="submit"
-            onClick={handleLogin}
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:bg-slate-500 dark:disabled:bg-slate-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Sign in
-          </button>
+          {!isLoading ? (
+            <button
+              disabled={!email || !password}
+              type="submit"
+              onClick={handleLogin}
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:bg-slate-500 dark:disabled:bg-slate-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Sign in
+            </button>
+          ) : (
+            <BiLoaderAlt className="animate-spin text-white dark:text-blue-400" />
+          )}
         </div>
       </form>
     </div>
