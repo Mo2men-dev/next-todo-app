@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import Nav from "../../components/Nav";
 import { useAuthContext } from "../../context/AuthContext";
 import { useEffect } from "react";
+import AddContentButtonsGroup from "../../components/AddContentButtonsGroup";
+import TodoListContainer from "../../components/TodoListContainer";
 
 const Home: NextPage = () => {
   // router is used to redirect to the user's profile page
@@ -15,19 +17,15 @@ const Home: NextPage = () => {
     // if a user is not logged in, redirect to the home page
     if (!currentUser) {
       router.push("/");
-    } else {
-      // if a user is logged in, redirect to the user's profile page
-      router.push(`/user/${currentUser?.displayName}`);
     }
-  }, [currentUser]);
+  }, []);
 
   return (
-    <>
+    <div>
       <Nav />
-      <div className="absolute text-yellow-300 top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2">
-        Welcome Back {currentUser?.displayName}
-      </div>
-    </>
+      <AddContentButtonsGroup />
+      <TodoListContainer />
+    </div>
   );
 };
 

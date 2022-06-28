@@ -2,13 +2,9 @@ import React, { useEffect, useState } from "react";
 import { MdOutlineDarkMode } from "react-icons/md";
 import { BsSun } from "react-icons/bs";
 import { useAuthContext } from "../context/AuthContext";
-import { useRouter } from "next/router";
 import { auth } from "../firebase/firebase";
 
 function Nav() {
-  // router is used to redirect to the user's profile page after signing out
-  const rounter = useRouter();
-
   // state is used to toggle the dark mode
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -48,13 +44,12 @@ function Nav() {
 
   const handleSignOut = async () => {
     signOut && signOut(auth);
-    rounter.push("/");
   };
 
   return (
     // if a user is logged in, render the nav bar with the user's display name and sign out button
 
-    <div className="flex justify-between fixed top-0 right-0 w-full">
+    <div className="flex justify-between p-1 top-0 right-0 w-full">
       {currentUser ? (
         <div className="flex justify-center items-center m-2 whitespace-nowrap text-gray-300 dark:text-gray-300">
           <span className="text-white dark:text-blue-400">

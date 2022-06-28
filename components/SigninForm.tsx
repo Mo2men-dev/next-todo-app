@@ -1,5 +1,4 @@
-import { useRouter } from "next/router";
-import React, { FormEventHandler, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ShowPasswordButton from "./ShowPasswordButton";
 import { useAuthContext } from "../context/AuthContext";
 import { auth } from "../firebase/firebase";
@@ -40,7 +39,10 @@ function SigninForm() {
     setIsLoading(true);
     if (validateEmail(email)) {
       handleRememberMe();
-      login && (await login(auth, email, password));
+      login &&
+        login(auth, email, password).then(() => {
+          setIsLoading(false);
+        });
     } else {
       alert("Invalid email");
     }
@@ -66,7 +68,7 @@ function SigninForm() {
   return (
     // form is used to login a user and is styled using tailwindcss
 
-    <div className="w-full h-full flex flex-col items-center justify-center">
+    <div className="absolute w-full h-fit top-2/4 -translate-y-2/4 flex flex-col items-center justify-center">
       {/* Sign in form */}
       <form className="bg-indigo-800 p-4 h-2/4 w-3/4 rounded-md dark:bg-gray-800">
         <label

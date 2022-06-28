@@ -10,7 +10,7 @@ import React, { ReactNode } from "react";
 import { useContext, useEffect, useState } from "react";
 import { auth } from "../firebase/firebase";
 import type { AuthContextType } from "../types/@types.auth";
-import { createNewCollection } from "../helpers/firestore";
+import { createNewCollectionDocs } from "../helpers/firestore";
 import { useRouter } from "next/router";
 
 // This is the context that is used to access the auth state
@@ -55,11 +55,8 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
       await updateProfile(auth.currentUser!, {
         displayName,
       });
-      await createNewCollection(
-        auth.currentUser!.uid,
-        auth.currentUser!.displayName!
-      );
-      router.push(`/`);
+      await createNewCollectionDocs(auth.currentUser!.uid);
+      router.push(`/user/${auth.currentUser!.displayName}`);
     } catch (error) {
       alert("something went wrong");
     }
@@ -69,15 +66,16 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
   const login = async (auth: Auth, email: string, password: string) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push(`/`);
+      router.push(`${auth.currentUser!.displayName}`);
     } catch (error) {
       alert("Invalid email or password");
     }
   };
 
   // logout function is used to logout a user
-  const logout = (auth: Auth) => {
-    return signOut(auth);
+  const logout = async (auth: Auth) => {
+    await signOut(auth);
+    router.push("/");
   };
 
   const value: AuthContextType | any = {

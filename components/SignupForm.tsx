@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { auth } from "../firebase/firebase";
@@ -35,8 +34,11 @@ function SignupForm() {
   > = async (e) => {
     e.preventDefault();
     if (validateEmail(email)) {
-      signup && (await signup(auth, email, password, displayName));
       setIsLoading(true);
+      signup &&
+        signup(auth, email, password, displayName).then(() => {
+          setIsLoading(false);
+        });
     } else {
       alert("Invalid email");
     }
@@ -44,7 +46,7 @@ function SignupForm() {
   return (
     // form is used to create a new user and is styled using tailwindcss
 
-    <div className="w-full h-full flex flex-col items-center justify-center">
+    <div className="absolute w-full h-fit top-2/4 -translate-y-2/4 flex flex-col items-center justify-center">
       {/* Sign up form */}
       <form className="bg-indigo-800 p-4 h-2/4 w-3/4 rounded-md dark:bg-gray-800">
         <label
@@ -90,6 +92,7 @@ function SignupForm() {
           <input
             type="text"
             id="displayName"
+            max={12}
             onChange={(e) => setDisplayName(e.target.value)}
             className="bg-gray-50 border shadow-xl border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Display Name (12 char)"
