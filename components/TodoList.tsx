@@ -19,8 +19,24 @@ function TodoList(props: { title: string; todos: Array<string> }) {
     parseInt(JSON.parse(localStorage.getItem(`${props.title}-x`) || "0"))
   );
 
+  // a drag event listener for the todo list that makes sure it doesn't go off screen
   const handleDrag = (e: any, ui: any) => {
-    localStorage.setItem(`${props.title}-x`, ui.x);
+    // make sure the todo list doesn't go off screen and on mobile devices
+    if (window.innerWidth < 768) {
+      if (ui.x < 0) {
+        ui.x = 0;
+      } else if (ui.x > window.innerWidth - 200) {
+        ui.x = window.innerWidth - 200;
+      }
+    }
+    if (ui.x < 0) {
+      localStorage.setItem(`${props.title}-x`, "0");
+      setX(0);
+    } else if (ui.x > window.innerWidth - 200) {
+      localStorage.setItem(`${props.title}-x`, `${window.innerWidth - 200}`);
+      setX(window.innerWidth - 200);
+    }
+    localStorage.setItem(`${props.title}-x`, JSON.stringify(ui.x));
     setX(ui.x);
   };
 
@@ -30,11 +46,12 @@ function TodoList(props: { title: string; todos: Array<string> }) {
       bounds=".todo-list-container"
       handle=".handle"
       defaultPosition={{ x: x, y: 0 }}
+      position={{ x: x, y: 0 }}
       grid={[10, 10]}
       scale={1}
       onDrag={handleDrag}
     >
-      <div className="handle w-fit h-fit bg-yellow-400 m-1 rounded-md p-2 shadow-md dark:bg-slate-400">
+      <div className="handle hover:cursor-move w-fit h-fit bg-yellow-400 m-1 rounded-md p-2 shadow-md dark:bg-slate-400">
         <div className="flex w-full justify-between items-center">
           {editTodoTitle ? (
             <div className="flex justify-between items-center">
