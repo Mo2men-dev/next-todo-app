@@ -1,22 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsFillPencilFill } from "react-icons/bs";
 import { deleteTodoList, updateTodosLists } from "../helpers/firestore";
 import { MdDone } from "react-icons/md";
 import { TiDeleteOutline } from "react-icons/ti";
 import { AiFillDelete } from "react-icons/ai";
 import { useAuthContext } from "../context/AuthContext";
+import Draggable from "react-draggable";
 
 function TodoList(props: { title: string; todos: Array<string> }) {
   const [editTodo, setEditTodo] = useState(false);
   const [editTodoTitle, setEditTodoTitle] = useState(false);
   const [todoListTitle, setTodoListTitle] = useState(props.title);
   const [todosState, setTodosState] = useState(props.todos);
-
   const currentUser = useAuthContext()?.currentUser;
 
+  // get current todo list X coordinate and save it to local storage
+  const [x, setX] = useState(
+    parseInt(JSON.parse(localStorage.getItem(`${props.title}-x`) || "0"))
+  );
+
+  const handleDrag = (e: any, ui: any) => {
+    localStorage.setItem(`${props.title}-x`, ui.x);
+    setX(ui.x);
+  };
+
   return (
-    <>
-      <div className="w-fit h-fit bg-yellow-400 m-1 rounded-md p-2 shadow-md dark:bg-slate-400">
+    <Draggable
+      axis="x"
+      bounds=".todo-list-container"
+      handle=".handle"
+      defaultPosition={{ x: x, y: 0 }}
+      grid={[10, 10]}
+      scale={1}
+      onDrag={handleDrag}
+    >
+      <div className="handle w-fit h-fit bg-yellow-400 m-1 rounded-md p-2 shadow-md dark:bg-slate-400">
         <div className="flex w-full justify-between items-center">
           {editTodoTitle ? (
             <div className="flex justify-between items-center">
@@ -139,7 +157,7 @@ function TodoList(props: { title: string; todos: Array<string> }) {
           );
         })}
       </div>
-    </>
+    </Draggable>
   );
 }
 
