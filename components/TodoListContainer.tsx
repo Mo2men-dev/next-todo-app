@@ -10,7 +10,7 @@ function TodoListContainer() {
   const [todos, setTodos] = useState<Array<[]>>([]);
 
   useEffect(() => {
-    onSnapshot(doc(db, currentUser!.uid, "todos"), (doc) => {
+    const unsub = onSnapshot(doc(db, currentUser!.uid, "todos"), (doc) => {
       const data: {} = doc.data()!.todos;
       const titles = Object.values(data).map((todoList: any) => {
         return todoList && todoList.title;
@@ -21,6 +21,7 @@ function TodoListContainer() {
       setTodoLists(titles);
       setTodos(todos);
     });
+    return () => unsub();
   }, []);
 
   return (

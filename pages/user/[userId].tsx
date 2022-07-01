@@ -17,6 +17,9 @@ const Home: NextPage = () => {
     // if a user is not logged in, redirect to the home page
     if (!currentUser) {
       router.push("/");
+    } else {
+      // if a user is logged in, redirect to the user's profile page
+      router.push(`/user/${currentUser.displayName}`);
     }
   }, []);
 

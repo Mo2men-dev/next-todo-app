@@ -4,53 +4,20 @@ import { deleteTodoList, updateTodosLists } from "../helpers/firestore";
 import { MdDone } from "react-icons/md";
 import { TiDeleteOutline } from "react-icons/ti";
 import { AiFillDelete } from "react-icons/ai";
+import { AiOutlinePlus } from "react-icons/ai";
 import { useAuthContext } from "../context/AuthContext";
-import Draggable from "react-draggable";
 
 function TodoList(props: { title: string; todos: Array<string> }) {
   const [editTodo, setEditTodo] = useState(false);
   const [editTodoTitle, setEditTodoTitle] = useState(false);
+  const [addTodo, setAddTodo] = useState(false);
+  const [newTodo, setNewTodo] = useState("");
   const [todoListTitle, setTodoListTitle] = useState(props.title);
   const [todosState, setTodosState] = useState(props.todos);
   const currentUser = useAuthContext()?.currentUser;
 
-  // get current todo list X coordinate and save it to local storage
-  const [x, setX] = useState(
-    parseInt(JSON.parse(localStorage.getItem(`${props.title}-x`) || "0"))
-  );
-
-  // a drag event listener for the todo list that makes sure it doesn't go off screen
-  const handleDrag = (e: any, ui: any) => {
-    // make sure the todo list doesn't go off screen and on mobile devices
-    if (window.innerWidth < 768) {
-      if (ui.x < 0) {
-        ui.x = 0;
-      } else if (ui.x > window.innerWidth - 200) {
-        ui.x = window.innerWidth - 200;
-      }
-    }
-    if (ui.x < 0) {
-      localStorage.setItem(`${props.title}-x`, "0");
-      setX(0);
-    } else if (ui.x > window.innerWidth - 200) {
-      localStorage.setItem(`${props.title}-x`, `${window.innerWidth - 200}`);
-      setX(window.innerWidth - 200);
-    }
-    localStorage.setItem(`${props.title}-x`, JSON.stringify(ui.x));
-    setX(ui.x);
-  };
-
   return (
-    <Draggable
-      axis="x"
-      bounds=".todo-list-container"
-      handle=".handle"
-      defaultPosition={{ x: x, y: 0 }}
-      position={{ x: x, y: 0 }}
-      grid={[10, 10]}
-      scale={1}
-      onDrag={handleDrag}
-    >
+    <>
       <div className="handle hover:cursor-move w-fit h-fit bg-yellow-400 m-1 rounded-md p-2 shadow-md dark:bg-slate-400">
         <div className="flex w-full justify-between items-center">
           {editTodoTitle ? (
@@ -71,6 +38,7 @@ function TodoList(props: { title: string; todos: Array<string> }) {
               </button>
               <button
                 className="ml-2 text-green-600"
+                disabled={todoListTitle === props.title}
                 onClick={() => {
                   updateTodosLists(currentUser!.uid, {
                     todos: {
@@ -98,15 +66,56 @@ function TodoList(props: { title: string; todos: Array<string> }) {
                 />
               </button>
               <button>
+                <AiOutlinePlus
+                  className="ml-2 text-emerald-700"
+                  onClick={() => {
+                    setAddTodo(!addTodo);
+                    console.log(addTodo);
+                  }}
+                />
+              </button>
+              <button>
                 <AiFillDelete
                   className="ml-2 text-red-500"
                   onClick={() => {
                     deleteTodoList(currentUser!.uid, props.title);
+                    localStorage.removeItem(`${props.title}-x`);
                   }}
                 />
               </button>
             </div>
           )}
+          {/* create a form to add a new todo that renders conditionaly based on the addTodo state */}
+          {addTodo ? (
+            <div className="flex justify-between bg-white p-1 ml-1">
+              <input
+                value={newTodo}
+                maxLength={20}
+                onChange={(e) => {
+                  setNewTodo(e.target.value);
+                }}
+                className="block p-1 my-1 w-fit text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              />
+              <button
+                className="text-sm ml-1"
+                onClick={() => {
+                  const newTodos = [...todosState, newTodo];
+                  setTodosState(newTodos);
+                  updateTodosLists(currentUser!.uid, {
+                    todos: {
+                      [todoListTitle]: {
+                        title: todoListTitle,
+                        todos: newTodos,
+                      },
+                    },
+                  });
+                  setNewTodo("");
+                }}
+              >
+                Add
+              </button>
+            </div>
+          ) : null}
         </div>
         {props.todos.map((todo, index) => {
           return (
@@ -162,19 +171,45 @@ function TodoList(props: { title: string; todos: Array<string> }) {
                       {todo}
                     </label>
                   </div>
-                  <button>
-                    <BsFillPencilFill
-                      className="ml-2 text-slate-100"
-                      onClick={() => setEditTodo(!editTodo)}
-                    />
-                  </button>
+                  <div className="flex">
+                    <button>
+                      <BsFillPencilFill
+                        className="ml-2 text-slate-100"
+                        onClick={() => setEditTodo(!editTodo)}
+                      />
+                    </button>
+                    <button
+                      className="ml-2 text-red-500"
+                      onClick={() => {
+                        // checks if todo list will be empty after deleting todo
+                        const newTodos = [...props.todos];
+                        if (newTodos.length <= 2) {
+                          deleteTodoList(currentUser!.uid, props.title);
+                          localStorage.removeItem(`${props.title}-x`);
+                        } else {
+                          newTodos.splice(index, 1);
+                          setTodosState(newTodos);
+                          updateTodosLists(currentUser!.uid, {
+                            todos: {
+                              [todoListTitle]: {
+                                title: todoListTitle,
+                                todos: newTodos,
+                              },
+                            },
+                          });
+                        }
+                      }}
+                    >
+                      <AiFillDelete />
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           );
         })}
       </div>
-    </Draggable>
+    </>
   );
 }
 

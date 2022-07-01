@@ -56,7 +56,10 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
         displayName,
       });
       await createNewCollectionDocs(auth.currentUser!.uid);
-      router.push(`/user/${auth.currentUser!.displayName}`);
+      router.push(
+        `/user/${auth.currentUser!.displayName}`,
+        `/user/${auth.currentUser!.displayName}`
+      );
     } catch (error) {
       alert("something went wrong");
     }
@@ -66,7 +69,10 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
   const login = async (auth: Auth, email: string, password: string) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push(`${auth.currentUser!.displayName}`);
+      router.push(
+        `${auth.currentUser!.displayName}`,
+        `/user/${auth.currentUser!.displayName}`
+      );
     } catch (error) {
       alert("Invalid email or password");
     }
@@ -75,7 +81,7 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
   // logout function is used to logout a user
   const logout = async (auth: Auth) => {
     await signOut(auth);
-    router.push("/");
+    router.push("/", "/");
   };
 
   const value: AuthContextType | any = {
