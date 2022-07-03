@@ -3,6 +3,7 @@ import ShowPasswordButton from "./ShowPasswordButton";
 import { useAuthContext } from "../context/AuthContext";
 import { auth } from "../firebase/firebase";
 import { BiLoaderAlt } from "react-icons/bi";
+import Logo from "./Logo";
 
 function SigninForm() {
   // local storage is used to store the user's email
@@ -69,6 +70,7 @@ function SigninForm() {
     // form is used to login a user and is styled using tailwindcss
 
     <div className="absolute w-full h-fit top-2/4 -translate-y-2/4 flex flex-col items-center justify-center">
+      <Logo />
       {/* Sign in form */}
       <form className="bg-indigo-800 p-4 h-2/4 w-3/4 rounded-md dark:bg-gray-800">
         <label

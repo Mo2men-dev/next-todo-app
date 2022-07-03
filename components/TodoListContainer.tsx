@@ -25,7 +25,7 @@ function TodoListContainer() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full p-4">
+    <div className="flex flex-col w-full p-4 animate-fade">
       <h1 className="text-white text-3xl mb-1">Todos</h1>
       <div className="flex p-2 bg-slate-200 rounded-md flex-wrap shadow-xl dark:bg-gray-700">
         {todoLists.length > 0 ? (

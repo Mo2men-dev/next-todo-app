@@ -3,6 +3,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { auth } from "../firebase/firebase";
 import ShowPasswordButton from "./ShowPasswordButton";
 import { BiLoaderAlt } from "react-icons/bi";
+import Logo from "./Logo";
 
 function SignupForm() {
   // state is used to store the user's email and password and to display name
@@ -47,6 +48,7 @@ function SignupForm() {
     // form is used to create a new user and is styled using tailwindcss
 
     <div className="absolute w-full h-fit top-2/4 -translate-y-2/4 flex flex-col items-center justify-center">
+      <Logo />
       {/* Sign up form */}
       <form className="bg-indigo-800 p-4 h-2/4 w-3/4 rounded-md dark:bg-gray-800">
         <label
