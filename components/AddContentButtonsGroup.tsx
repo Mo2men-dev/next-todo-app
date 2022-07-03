@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import AddTodoForm from "./AddTodoForm";
 import AddTimeTableForm from "./AddTimeTableForm";
+import AddNoteForm from "./AddNoteForm";
 
 function AddContentButtonsGroup(props: {}) {
   // Add Todo Lists Form
@@ -13,6 +14,10 @@ function AddContentButtonsGroup(props: {}) {
   // Add Tables Form
   const [addTimeTableForm, setAddTimeTableForm] = useState(false);
   const [timeTableTitle, setTimeTableTitle] = useState("");
+
+  // Add Note Form
+  const [addNoteForm, setAddNoteForm] = useState(false);
+  const [noteText, setNoteText] = useState("");
 
   // function to remove a todo from the todos array
   const removeTodo = (index: number) => {
@@ -43,6 +48,7 @@ function AddContentButtonsGroup(props: {}) {
         </button>
         <button
           type="button"
+          onClick={() => setAddNoteForm(!addNoteForm)}
           className="flex justify-center border-none items-center py-2 px-4 text-xs whitespace-nowrap font-medium text-blue-700 bg-white rounded-r-md hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
         >
           <AiOutlinePlus className="mr-1" />
@@ -72,6 +78,16 @@ function AddContentButtonsGroup(props: {}) {
           setAddTimeTableForm={setAddTimeTableForm}
           timeTableTitle={timeTableTitle}
           setTimeTableTitle={setTimeTableTitle}
+        />
+      ) : null}
+
+      {/* A form to add a note */}
+      {addNoteForm ? (
+        <AddNoteForm
+          addNoteForm={addNoteForm}
+          setAddNoteForm={setAddNoteForm}
+          noteText={noteText}
+          setNoteText={setNoteText}
         />
       ) : null}
     </div>

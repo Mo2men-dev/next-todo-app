@@ -5,6 +5,8 @@ import {
   getDoc,
   updateDoc,
   deleteField,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 
 // create 3 documents in the collection with the id of the user called "todos" , "timetables" and "notes"
@@ -25,7 +27,7 @@ export const createNewCollectionDocs = async (userId: string) => {
     userId,
     title: "Notes",
     createdAt: new Date(),
-    notes: {},
+    notes: [],
   });
 };
 
@@ -93,5 +95,21 @@ export const deleteTimetable = async (userId: string, timetableId: string) => {
   const fieldRef = doc(db, userId, "timetables");
   await updateDoc(fieldRef, {
     [`timetables.${timetableId}`]: deleteField(),
+  });
+};
+
+// add a note to the "notes" document
+export const addNote = async (userId: string, noteContent: string) => {
+  const fieldRef = doc(db, userId, "notes");
+  await updateDoc(fieldRef, {
+    notes: arrayUnion(noteContent),
+  });
+};
+
+// remove a note
+export const removeNote = async (userId: string, noteContent: string) => {
+  const fieldRef = doc(db, userId, "notes");
+  await updateDoc(fieldRef, {
+    notes: arrayRemove(noteContent),
   });
 };

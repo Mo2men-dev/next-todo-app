@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import AddContentButtonsGroup from "../../components/AddContentButtonsGroup";
 import TodoListContainer from "../../components/TodoListContainer";
 import TimeTableContainer from "../../components/TimeTableContainer";
+import NotesContainer from "../../components/NotesContainer";
 
 const Home: NextPage = () => {
   // router is used to redirect to the user's profile page
@@ -30,6 +31,7 @@ const Home: NextPage = () => {
       <AddContentButtonsGroup />
       <TodoListContainer />
       <TimeTableContainer />
+      <NotesContainer />
     </div>
   );
 };
