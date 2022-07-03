@@ -70,7 +70,7 @@ function AuthContext({ children }: { children: ReactNode }): JSX.Element {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push(
-        `${auth.currentUser!.displayName}`,
+        `/user/${auth.currentUser!.displayName}`,
         `/user/${auth.currentUser!.displayName}`
       );
     } catch (error) {
