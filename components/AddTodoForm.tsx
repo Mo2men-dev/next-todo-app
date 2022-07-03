@@ -21,6 +21,8 @@ function AddTodoForm(props: {
         type="button"
         onClick={() => {
           props.setAddTodoForm(!props.addTodoForm);
+          props.setTodoListTitle("");
+          props.setTodos([]);
         }}
         className="flex justify-center items-center text-white my-3 mx-4 bg-red-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center"
       >

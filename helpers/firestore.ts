@@ -7,7 +7,7 @@ import {
   deleteField,
 } from "firebase/firestore";
 
-// create 3 documents in the collection with the id of the user called "todos" , "timelines" and "notes"
+// create 3 documents in the collection with the id of the user called "todos" , "timetables" and "notes"
 export const createNewCollectionDocs = async (userId: string) => {
   await setDoc(doc(db, userId, "todos"), {
     userId,
@@ -15,11 +15,11 @@ export const createNewCollectionDocs = async (userId: string) => {
     createdAt: new Date(),
     todos: {},
   });
-  await setDoc(doc(db, userId, "timelines"), {
+  await setDoc(doc(db, userId, "timetables"), {
     userId,
-    title: "Timelines",
+    title: "Timetables",
     createdAt: new Date(),
-    timelines: {},
+    timetables: {},
   });
   await setDoc(doc(db, userId, "notes"), {
     userId,
@@ -66,5 +66,32 @@ export const deleteTodoList = async (userId: string, todoId: string) => {
   const fieldRef = doc(db, userId, "todos");
   await updateDoc(fieldRef, {
     [`todos.${todoId}`]: deleteField(),
+  });
+};
+
+// add a timetable to the "timetables" document
+export const addTimetable = async (
+  userId: string,
+  timetableTitle: string,
+  headers: string[],
+  rows: {
+    title: string;
+    data: string[];
+  }[]
+) => {
+  const fieldRef = doc(db, userId, "timetables");
+  await updateDoc(fieldRef, {
+    [`timetables.${timetableTitle}`]: {
+      headers: headers,
+      rows: rows,
+    },
+  });
+};
+
+// delete a timetable
+export const deleteTimetable = async (userId: string, timetableId: string) => {
+  const fieldRef = doc(db, userId, "timetables");
+  await updateDoc(fieldRef, {
+    [`timetables.${timetableId}`]: deleteField(),
   });
 };

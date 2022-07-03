@@ -18,7 +18,7 @@ function TodoList(props: { title: string; todos: Array<string> }) {
 
   return (
     <>
-      <div className="handle hover:cursor-move w-fit h-fit bg-yellow-400 m-1 rounded-md p-2 shadow-md dark:bg-slate-400">
+      <div className="w-fit h-fit bg-yellow-400 m-1 rounded-md p-2 shadow-md dark:bg-slate-400">
         <div className="flex w-full justify-between items-center">
           {editTodoTitle ? (
             <div className="flex justify-between items-center">
@@ -70,7 +70,6 @@ function TodoList(props: { title: string; todos: Array<string> }) {
                   className="ml-2 text-emerald-700"
                   onClick={() => {
                     setAddTodo(!addTodo);
-                    console.log(addTodo);
                   }}
                 />
               </button>
@@ -87,7 +86,7 @@ function TodoList(props: { title: string; todos: Array<string> }) {
           )}
           {/* create a form to add a new todo that renders conditionaly based on the addTodo state */}
           {addTodo ? (
-            <div className="flex justify-between bg-white p-1 ml-1">
+            <div className="flex justify-between p-1 ml-1">
               <input
                 value={newTodo}
                 maxLength={20}

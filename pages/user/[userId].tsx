@@ -5,6 +5,7 @@ import { useAuthContext } from "../../context/AuthContext";
 import { useEffect } from "react";
 import AddContentButtonsGroup from "../../components/AddContentButtonsGroup";
 import TodoListContainer from "../../components/TodoListContainer";
+import TimeTableContainer from "../../components/TimeTableContainer";
 
 const Home: NextPage = () => {
   // router is used to redirect to the user's profile page
@@ -28,6 +29,7 @@ const Home: NextPage = () => {
       <Nav />
       <AddContentButtonsGroup />
       <TodoListContainer />
+      <TimeTableContainer />
     </div>
   );
 };

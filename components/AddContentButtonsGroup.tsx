@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import AddTodoForm from "./AddTodoForm";
+import AddTimeTableForm from "./AddTimeTableForm";
 
 function AddContentButtonsGroup(props: {}) {
+  // Add Todo Lists Form
   const [addTodoForm, setAddTodoForm] = useState(false);
   const [todoListTitle, setTodoListTitle] = useState("");
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState<string[]>([]);
+
+  // Add Tables Form
+  const [addTimeTableForm, setAddTimeTableForm] = useState(false);
+  const [timeTableTitle, setTimeTableTitle] = useState("");
 
   // function to remove a todo from the todos array
   const removeTodo = (index: number) => {
@@ -29,17 +35,18 @@ function AddContentButtonsGroup(props: {}) {
         </button>
         <button
           type="button"
+          onClick={() => setAddTimeTableForm(!addTimeTableForm)}
           className="flex justify-evenly border-none items-center py-2 px-4 text-xs whitespace-nowrap font-medium text-blue-700 bg-white hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
         >
           <AiOutlinePlus className="mr-1" />
-          Add Time Table
+          Add Table
         </button>
         <button
           type="button"
           className="flex justify-center border-none items-center py-2 px-4 text-xs whitespace-nowrap font-medium text-blue-700 bg-white rounded-r-md hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
         >
           <AiOutlinePlus className="mr-1" />
-          Add A Note
+          Add Note
         </button>
       </div>
       {/* A form to add a todo list */}
@@ -55,6 +62,16 @@ function AddContentButtonsGroup(props: {}) {
           todos={todos}
           setTodos={setTodos}
           removeTodo={removeTodo}
+        />
+      ) : null}
+      {/* A form to add a table */}
+
+      {addTimeTableForm ? (
+        <AddTimeTableForm
+          addTimeTableForm={addTimeTableForm}
+          setAddTimeTableForm={setAddTimeTableForm}
+          timeTableTitle={timeTableTitle}
+          setTimeTableTitle={setTimeTableTitle}
         />
       ) : null}
     </div>
