@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
+import Link from "next/link";
 import { auth } from "../firebase/firebase";
 import ShowPasswordButton from "./ShowPasswordButton";
 import { BiLoaderAlt } from "react-icons/bi";
@@ -56,12 +57,11 @@ function SignupForm() {
           className="w-full text-center block mb-2 text-3xl font-['Helvetica'] text-gray-300 dark:text-gray-300"
         >
           Sign up with email or{" "}
-          <a
-            href="/"
-            className="text-white border-b-2 border-blue-300 cursor-pointer hover:cursor-pointer dark:text-blue-300 dark:border-whites"
-          >
-            Sign in
-          </a>{" "}
+          <Link href="/">
+            <a className="text-white border-b-2 border-blue-300 cursor-pointer hover:cursor-pointer dark:text-blue-300 dark:border-whites">
+              Sign in
+            </a>
+          </Link>{" "}
           instead
         </label>
 

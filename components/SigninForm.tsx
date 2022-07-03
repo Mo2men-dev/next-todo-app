@@ -3,6 +3,7 @@ import ShowPasswordButton from "./ShowPasswordButton";
 import { useAuthContext } from "../context/AuthContext";
 import { auth } from "../firebase/firebase";
 import { BiLoaderAlt } from "react-icons/bi";
+import Link from "next/link";
 import Logo from "./Logo";
 
 function SigninForm() {
@@ -78,12 +79,11 @@ function SigninForm() {
           className="w-full text-center block mb-2 text-3xl font-['Helvetica'] text-gray-300 dark:text-gray-300"
         >
           Sign in with email or{" "}
-          <a
-            href="/signup"
-            className="text-white border-b-2 border-blue-300 cursor-pointer hover:cursor-pointer dark:text-blue-300 dark:border-whites"
-          >
-            Sign up
-          </a>
+          <Link href="/signup">
+            <a className="text-white border-b-2 border-blue-300 cursor-pointer hover:cursor-pointer dark:text-blue-300 dark:border-whites">
+              Sign up
+            </a>
+          </Link>
         </label>
 
         {/* E-mail input */}
