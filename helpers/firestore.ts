@@ -8,6 +8,7 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
+import { Todo } from "../components/TodoListContainer";
 
 // create 3 documents in the collection with the id of the user called "todos" , "timetables" and "notes"
 export const createNewCollectionDocs = async (userId: string) => {
@@ -46,7 +47,7 @@ export const getTodosLists = async (userId: string) => {
 export const addTodoList = async (
   userId: string,
   todoListTitle: string,
-  todos: string[]
+  todos: Todo[]
 ) => {
   const fieldRef = doc(db, userId, "todos");
   await updateDoc(fieldRef, {

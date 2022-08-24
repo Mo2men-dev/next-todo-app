@@ -2,16 +2,17 @@ import React from "react";
 import { TiDeleteOutline } from "react-icons/ti";
 import { useAuthContext } from "../context/AuthContext";
 import { addTodoList } from "../helpers/firestore";
+import { Todo } from "./TodoListContainer";
 
 function AddTodoForm(props: {
   addTodoForm: boolean;
   setAddTodoForm: (value: boolean) => void;
   todoListTitle: string;
   setTodoListTitle: (value: string) => void;
-  todo: string;
-  setTodo: (value: string) => void;
-  todos: Array<string>;
-  setTodos: (value: Array<string>) => void;
+  todo: Todo;
+  setTodo: (value: Todo) => void;
+  todos: Array<Todo>;
+  setTodos: (value: Array<Todo>) => void;
   removeTodo: (index: number) => void;
 }) {
   const currentUser = useAuthContext()?.currentUser;
@@ -54,19 +55,40 @@ function AddTodoForm(props: {
           </label>
           <div className="flex items-center h-fit">
             <input
+              id="default-checkbox"
+              type="checkbox"
+              checked={props.todo.done}
+              onChange={(e) => {
+                props.setTodo({
+                  ...props.todo,
+                  done: !props.todo.done,
+                });
+              }}
+              className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+
+            <input
               type="text"
-              value={props.todo}
-              onChange={(e) => props.setTodo(e.target.value)}
+              value={props.todo.text}
+              onChange={(e) =>
+                props.setTodo({
+                  ...props.todo,
+                  text: e.target.value,
+                })
+              }
               id="small-input"
               placeholder="Todo"
-              className="mr-1 p-2 w-full text-gray-900 shadow-md bg-gray-50 rounded-lg border border-gray-300 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="mx-2 p-2 w-full text-gray-900 shadow-md bg-gray-50 rounded-lg border border-gray-300 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             />
             <button
               type="button"
               disabled={!props.todo}
               onClick={() => {
                 props.setTodos([...props.todos, props.todo]);
-                props.setTodo("");
+                props.setTodo({
+                  done: false,
+                  text: "",
+                });
               }}
               className="px-3 py-2 text-xs font-medium text-center shadow-md text-black disabled:bg-gray-200 dark:disabled:bg-gray-400 bg-white rounded-lg hover:bg-slate-300 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
@@ -82,7 +104,7 @@ function AddTodoForm(props: {
                 key={index}
                 className="mt-1 dark:text-white bg-indigo-600 flex shadow-md justify-between items-center font-semibold rounded-md py-1 px-2 dark:bg-gray-700 text-black"
               >
-                <span className="text-white">{todo}</span>
+                <span className="text-white">{todo.text}</span>
                 <button type="button" onClick={() => props.removeTodo(index)}>
                   <TiDeleteOutline className="text-lg text-white dark:text-red-500" />
                 </button>

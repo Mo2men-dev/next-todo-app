@@ -3,13 +3,17 @@ import { AiOutlinePlus } from "react-icons/ai";
 import AddTodoForm from "./AddTodoForm";
 import AddTimeTableForm from "./AddTimeTableForm";
 import AddNoteForm from "./AddNoteForm";
+import { Todo } from "./TodoListContainer";
 
 function AddContentButtonsGroup(props: {}) {
   // Add Todo Lists Form
   const [addTodoForm, setAddTodoForm] = useState(false);
   const [todoListTitle, setTodoListTitle] = useState("");
-  const [todo, setTodo] = useState("");
-  const [todos, setTodos] = useState<string[]>([]);
+  const [todo, setTodo] = useState<Todo>({
+    text: "",
+    done: false,
+  });
+  const [todos, setTodos] = useState<Todo[]>([]);
 
   // Add Tables Form
   const [addTimeTableForm, setAddTimeTableForm] = useState(false);

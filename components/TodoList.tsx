@@ -6,14 +6,18 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { AiFillDelete } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useAuthContext } from "../context/AuthContext";
+import { Todo } from "./TodoListContainer";
 
-function TodoList(props: { title: string; todos: Array<string> }) {
+function TodoList(props: { title: string; todos: Array<Todo> }) {
   const [editTodo, setEditTodo] = useState(false);
   const [editTodoTitle, setEditTodoTitle] = useState(false);
   const [addTodo, setAddTodo] = useState(false);
-  const [newTodo, setNewTodo] = useState("");
+  const [newTodo, setNewTodo] = useState<Todo>({
+    text: "",
+    done: false,
+  });
   const [todoListTitle, setTodoListTitle] = useState(props.title);
-  const [todosState, setTodosState] = useState(props.todos);
+  const [todosState, setTodosState] = useState<Todo[]>(props.todos);
   const currentUser = useAuthContext()?.currentUser;
 
   return (
@@ -88,10 +92,13 @@ function TodoList(props: { title: string; todos: Array<string> }) {
           {addTodo ? (
             <div className="flex justify-between p-1 ml-1">
               <input
-                value={newTodo}
+                value={newTodo.text}
                 maxLength={20}
                 onChange={(e) => {
-                  setNewTodo(e.target.value);
+                  setNewTodo({
+                    ...newTodo,
+                    text: e.target.value,
+                  });
                 }}
                 className="block p-1 my-1 w-fit text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
@@ -108,7 +115,10 @@ function TodoList(props: { title: string; todos: Array<string> }) {
                       },
                     },
                   });
-                  setNewTodo("");
+                  setNewTodo({
+                    ...newTodo,
+                    text: "",
+                  });
                 }}
               >
                 Add
@@ -124,10 +134,10 @@ function TodoList(props: { title: string; todos: Array<string> }) {
                   <input
                     className="block p-1 my-1 w-fit text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     type="text"
-                    value={todosState[index]}
+                    value={todosState[index].text}
                     onChange={(e) => {
                       const newTodos = [...props.todos];
-                      newTodos[index] = e.target.value;
+                      newTodos[index].text = e.target.value;
                       setTodosState(newTodos);
                     }}
                   />
@@ -160,14 +170,30 @@ function TodoList(props: { title: string; todos: Array<string> }) {
                     <input
                       id="purple-checkbox"
                       type="checkbox"
-                      value=""
+                      checked={todo.done}
+                      onClick={() => {
+                        const updateCheckboxForTodo = [...props.todos];
+                        updateCheckboxForTodo[index].done =
+                          !props.todos[index].done;
+                        setTodosState(updateCheckboxForTodo);
+                      }}
+                      onChange={() => {
+                        updateTodosLists(currentUser!.uid, {
+                          todos: {
+                            [todoListTitle]: {
+                              title: todoListTitle,
+                              todos: todosState,
+                            },
+                          },
+                        });
+                      }}
                       className="relative top-2/4 -translate-y-2/4 w-4 h-4 text-purple-600 bg-gray-100 rounded border-gray-300 focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     />
                     <label
                       htmlFor="purple-checkbox"
                       className="ml-1 text-sm font-medium text-gray-900 dark:text-gray-300"
                     >
-                      {todo}
+                      {todo.text}
                     </label>
                   </div>
                   <div className="flex">

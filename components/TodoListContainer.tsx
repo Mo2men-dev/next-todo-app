@@ -4,10 +4,15 @@ import TodoList from "../components/TodoList";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
+export type Todo = {
+  text?: string;
+  done?: boolean;
+};
+
 function TodoListContainer() {
   const currentUser = useAuthContext()?.currentUser;
   const [todoLists, setTodoLists] = useState<Array<string>>([]);
-  const [todos, setTodos] = useState<Array<[]>>([]);
+  const [todos, setTodos] = useState<Array<Todo[]>>([]);
 
   useEffect(() => {
     const unsub = onSnapshot(doc(db, currentUser!.uid, "todos"), (doc) => {
